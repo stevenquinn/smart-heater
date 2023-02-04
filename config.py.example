@@ -1,0 +1,5 @@
+ssid = "My Wifi Network"
+password = "my_wifi_password"
+api_token = "abc123"
+on_pin = 0
+temp_pin = 1
