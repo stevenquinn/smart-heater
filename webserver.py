@@ -21,7 +21,7 @@ class WebServer:
 
     # Listen for incoming http requests. This loop will run forever until the server is stopped.
     def listen(self):
-
+        
         while self.run_server:
             try:
                 cl,addr = self.s.accept()
@@ -47,28 +47,35 @@ class WebServer:
                 self.send_response(cl, status_code, json_data)
 
                 
-            except OSError as e:
+            except Exception as e:
                 # If it failed, try reconnecting to the wifi
                 print('failed to accept client connection')
                 cl.close()
-                self.s = self.wifiConnection.connect()
+
 
 
     # Check if the request has a valid token. This is a simple check to see if the token is in the request string.
     def request_has_valid_token(self, request_string):
         token_params = "?token=" + self.token
         return token_params in request_string
+    
+    
+    def get_request_route(self, request):
+        url = request.split('?')
+        url = url[0].split('GET /')
+        return url[1]
 
 
     # Send an HTTP request with the json data back to the requester.
     def send_response(self, cl, status_code, data):
-        cl.send('HTTP/1.0 ' + status_code + '\r\nContent-type: application/json\r\n\r\n')
+        cl.send('HTTP/1.0 ' + str(status_code) + '\r\nContent-type: application/json\r\n\r\n')
         cl.send(json.dumps(data))
         cl.close()
 
 
     def routeExists(self, request):
-        return request in self.routes
+        
+        return self.get_request_route(request) in self.routes
 
 
     """
@@ -76,4 +83,4 @@ class WebServer:
     Assuming there's a function in the route dictionary that matches the request.
     """ 
     def executeRoute(self, request):
-        return self.routes[request]()
+        return self.routes[self.get_request_route(request)](request)

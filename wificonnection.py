@@ -13,6 +13,10 @@ class WifiConnection:
         self.ssid = ssid
         self.password = password
         self.wlan.active(True)
+        
+    
+    def disconnect(self):
+        self.wlan.disconnect()
 
 
     def connect(self):

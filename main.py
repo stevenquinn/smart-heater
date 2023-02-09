@@ -25,8 +25,8 @@ class SmartHeater:
             'temp': self.temp_route,
         }
 
-        self.wifi = WifiConnection(config.ssid, config.password, config.api_token)
-        self.webserver = WebServer(self.wifi, self.routes)
+        self.wifi = WifiConnection(config.ssid, config.password)
+        self.webserver = WebServer(self.wifi, self.routes, config.api_token)
         self.webserver.listen()
         self.on_button.goto(0)
         self.init_buttons()
@@ -69,5 +69,6 @@ class SmartHeater:
 
 
 smart_heater = SmartHeater()
+
 
 
