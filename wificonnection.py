@@ -1,5 +1,7 @@
 import network 
 import socket
+from mpython import *
+import ntptime
 import time
 
 
@@ -43,5 +45,8 @@ class WifiConnection:
         s = socket.socket()
         s.bind(addr)
         s.listen(1)
+
+        # Set the time.
+        ntptime.settime()
         
         return s
