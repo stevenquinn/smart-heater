@@ -51,7 +51,7 @@ class Scheduler:
         if self.schedule_ran_today:
             return False
 
-        day_of_week = datetime.today().weekday()
+        day_of_week = self.get_day_of_week_name(datetime.today().weekday())
         hour = datetime.today().hour
         minutes = datetime.today().minute
         current_minutes = hour * 60 + minutes
@@ -64,6 +64,11 @@ class Scheduler:
 
         return current_minutes >= on_minutes and current_minutes < off_minutes
 
+
+    def get_day_of_week_name(self, day_of_week_index):
+
+        day_of_week_names = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        return day_of_week_names[day_of_week_index]
         
 
 
