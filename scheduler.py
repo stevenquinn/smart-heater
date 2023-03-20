@@ -16,7 +16,7 @@ class Scheduler:
             return json.load(f)
 
 
-    def set_schedule(self, schedule):
+    def set_schedule(self, request, schedule):
 
         with open(self.file, 'w') as f:
             json.dump(schedule, f)

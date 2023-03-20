@@ -41,7 +41,7 @@ class WebServer:
                 if (self.routeExists(request) != True):
                     status_code = 404
                 else:
-                    json_data = self.executeRoute(request)
+                    json_data = self.executeRoute(request, self.get_params(request))
 
                 # Send the response back to the requester
                 self.send_response(cl, status_code, json_data)
@@ -52,6 +52,14 @@ class WebServer:
                 print('failed to accept client connection')
                 cl.close()
 
+
+    def get_params(self, request):
+        params = request.split('?')
+        if len(params) > 1:
+            params = params[1].split('&')
+            return params
+        else:
+            return []
 
 
     # Check if the request has a valid token. This is a simple check to see if the token is in the request string.
@@ -82,5 +90,5 @@ class WebServer:
     Execute the route that was requested.
     Assuming there's a function in the route dictionary that matches the request.
     """ 
-    def executeRoute(self, request):
-        return self.routes[self.get_request_route(request)](request)
+    def executeRoute(self, request, params):
+        return self.routes[self.get_request_route(request)](request, params)

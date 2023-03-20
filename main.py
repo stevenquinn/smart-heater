@@ -4,6 +4,7 @@ from webserver import WebServer
 from servo import Servo
 import config
 import _thread
+import json
 from scheduler import Scheduler
 
 
@@ -66,16 +67,27 @@ class SmartHeater:
         
     
     # Route definitions
-    def ping_route(self, request):
+    def ping_route(self):
         return { "pong": True }
 
-    def on_off_route(self, request):
+    def on_off_route(self):
         self.press_on_button()
         return { "on": True }
 
-    def temp_route(self, request):
+    def temp_route(self):
         self.press_temp_button()
         return { "temp": True }
+
+    def handle_get_schedule(self):
+        return json.dump(self.scheduler.get_schedule())
+    
+    def handle_set_schedule(self, request, params):
+
+        try:
+            return self.scheduler.set_schedule(request, json.loads(params['schedule']))
+
+        except:
+            return { "error": "Invalid schedule" }
     
 
     # Interacting with the pins
