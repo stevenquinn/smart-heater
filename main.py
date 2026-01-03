@@ -1,15 +1,11 @@
-import network
-import time
+import config
 from wificonnection import WifiConnection
 from webserver import WebServer
-from servo import Servo
-import config
+from button import Button
 
 
 class SmartHeater:
     
-    on_button = Servo(config.on_pin)
-    temp_button = Servo(config.temp_pin)
     on_button_max = 285
     on_button_min = 0
     temp_button_max = 300
@@ -25,18 +21,13 @@ class SmartHeater:
             'temp': self.temp_route,
         }
 
+        self.on_button = Button(pin=config.on_pin, min_position=self.on_button_min, max_position=self.on_button_max)
+        self.temperature_button = Button(pin=config.temp_pin, min_position=self.temp_button_min, max_position=self.temp_button_max)
+
         self.wifi = WifiConnection(config.ssid, config.password)
         self.webserver = WebServer(self.wifi, self.routes, config.api_token)
         self.webserver.listen()
-        self.on_button.goto(0)
-        self.init_buttons()
-
-
-    #Initialize the buttons to their starting positions
-    def init_buttons(self):
-        time.sleep(2)
-        self.temp_button.goto(0)
-        time.sleep(2)
+        
         
     
     # Route definitions
@@ -44,29 +35,13 @@ class SmartHeater:
         return { "pong": True }
 
     def on_off_route(self, request):
-        self.press_on_button()
+        self.on_button.press()
         return { "on": True }
 
     def temp_route(self, request):
-        self.press_temp_button()
+        self.temperature_button.press()
         return { "temp": True }
     
-
-    # Interacting with the pins
-    def press_on_button(self):
-        self.on_button.goto(self.on_button_max)
-        time.sleep(self.button_delay)
-        self.on_button.goto(self.on_button_min)
-        
-    def press_temp_button(self):
-        self.temp_button.goto(self.temp_button_max)
-        time.sleep(self.button_delay)
-        self.temp_button.goto(self.temp_button_min)
-    
-
- 
-    
-
 
 smart_heater = SmartHeater()
 
